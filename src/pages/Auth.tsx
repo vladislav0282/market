@@ -12,23 +12,25 @@ const Auth = observer(() => {
   const { user } = useContext(Context)
   const location = useLocation()
   const isLogin = location.pathname === LOGIN_ROUTE
-  const [email, setEmail] = useState('')
+  const [username, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const name = ''
 
   const click = async () => {
     try {
       let data: any
       if (isLogin) {
-        data = await login(email, password)
+        data = await login(username, password)
         navigate(SHOP_ROUTE)
       } else {
-        data = await registration(email, password)
+        data = await registration(username, password, confirmPassword, name)
         navigate(LOGIN_ROUTE)
       }
       user.setUser(user)
       user.setIsAuth(true)
     } catch (e: any) {
-      alert(e.response.data.message)
+      alert(e.message)
     }
   }
 
@@ -42,7 +44,7 @@ const Auth = observer(() => {
           <h2 className="m-auto">{isLogin ? 'Авторизация' : 'Регистрация'}</h2>
           <Form className="d-flex flex-column ">
             <Form.Control
-              value={email}
+              value={username}
               onChange={(e) => setEmail(e.target.value)}
               className="mt-2"
               placeholder="Введите email"
@@ -54,6 +56,15 @@ const Auth = observer(() => {
               placeholder="Введите пароль"
               type="password"
             />
+            {!isLogin && (
+              <Form.Control
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="mt-2"
+                placeholder="Повторите пароль"
+                type="password"
+              />
+            )}
             <Row className="d-flex justify-content-between mt-3 ps-3 pe-3 ">
               {isLogin ? (
                 <div>
