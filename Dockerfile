@@ -1,21 +1,21 @@
-FROM node:18-alpine AS stage1
-WORKDIR /market
-COPY package.json ./
-RUN npm install
+# FROM node:18-alpine AS stage1
+# WORKDIR /market
+# COPY package.json ./
+# RUN npm install
 
-FROM node:18-alpine as stage2
-WORKDIR /market
-COPY . .
-COPY --from=stage /market/node_modules ./node_modules
-RUN npm run build
+# FROM node:18-alpine AS stage2
+# WORKDIR /market
+# COPY . .
+# COPY --from=stage /market/node_modules ./node_modules
+# RUN npm run build
 
-FROM node:18-alpine as final
-WORKDIR /market
-ENV NODE_ENV production
-COPY --from=stage2 /market ./
+# FROM node:18-alpine AS final
+# WORKDIR /market
+# ENV NODE_ENV production
+# COPY --from=stage2 /market ./
 
-EXPOSE 5173
-CMD [ "npm", "run dev" ]
+# EXPOSE 5173
+# CMD [ "npm", "run dev" ]
 
 # FROM node:18-alpine AS builder
 # WORKDIR /market
@@ -37,3 +37,14 @@ CMD [ "npm", "run dev" ]
 # COPY . .
 # EXPOSE 5173
 # CMD ["npm", "run", "dev"]
+
+FROM node:18-alpine AS stage
+WORKDIR /market
+COPY . .
+RUN npm install
+
+FROM node:18-alpine AS production
+WORKDIR /market
+COPY . .
+COPY --from=stage /market/node_modules ./node_modules
+RUN npm run build
