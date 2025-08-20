@@ -38,12 +38,16 @@
 # EXPOSE 5173
 # CMD ["npm", "run", "dev"]
 
-FROM node:18-alpine AS stage
+
+
+
+
+FROM node:22-alpine AS stage
 WORKDIR /market
 COPY . .
 RUN npm install
 
-FROM node:18-alpine AS production
+FROM node:22-alpine AS production
 WORKDIR /market
 COPY . .
 COPY --from=stage /market/node_modules ./node_modules
